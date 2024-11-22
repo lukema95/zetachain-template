@@ -11,6 +11,9 @@ import {
 import { UniversalKitProvider } from "@zetachain/universalkit";
 import { config } from "../wagmi";
 import { useTheme, ThemeProvider as NextThemesProvider } from "next-themes";
+import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { clusterApiUrl } from "@solana/web3.js";
 
 const queryClient = new QueryClient();
 
@@ -41,19 +44,25 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
   if (!mounted) return null;
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <NextThemesProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <WagmiWrapper>
-            <ThemeProvider>{children}</ThemeProvider>
-          </WagmiWrapper>
-        </NextThemesProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <ConnectionProvider endpoint={clusterApiUrl("devnet")}>
+      <WalletProvider wallets={[]} autoConnect>
+        <WalletModalProvider>
+          <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+              <NextThemesProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <WagmiWrapper>
+                  <ThemeProvider>{children}</ThemeProvider>
+                </WagmiWrapper>
+              </NextThemesProvider>
+            </QueryClientProvider>
+          </WagmiProvider>
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 };
