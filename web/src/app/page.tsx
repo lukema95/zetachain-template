@@ -16,7 +16,6 @@ const Page = () => {
     solanaAdapter: wallet as any,
   });
 
-  const [api, setApi] = useState("https://api.devnet.solana.com");
   const [amount, setAmount] = useState("0.1");
   const [recipient, setRecipient] = useState("0x1b02C3079c039DF9E20DC68427cb87bf821BffeF");
   const [paramTypes, setParamTypes] = useState<string[]>(["address", "bytes", "bool"]);
@@ -27,7 +26,6 @@ const Page = () => {
     
     try {
       const result = await client.solanaDeposit({
-        api: api,
         amount: Number(amount),
         recipient: recipient,
         params: [paramTypes, paramValues],
@@ -55,17 +53,6 @@ const Page = () => {
               placeholder="Please enter the amount"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">API Address</label>
-            <input 
-              type="text"
-              className="w-full p-2 border rounded"
-              placeholder="Please enter the API address"
-              value={api}
-              onChange={(e) => setApi(e.target.value)}
             />
           </div>
 
